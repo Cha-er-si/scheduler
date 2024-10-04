@@ -1,0 +1,14 @@
+header {
+  background-color: var(--primary-darker);
+  color: var(--white);
+  height: 3rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  display: flex;
+  align-items: center;
+
+  p {
+    font-size: clamp(1.25rem, 1.143rem + 0.536vw, 2rem);
+    font-weight: bold;
+  }
+}
