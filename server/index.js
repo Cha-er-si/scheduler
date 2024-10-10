@@ -31,5 +31,14 @@ app.use(
     credentials: true,
   })
 );
+
 app.use(express.json());
 app.use(cookieParser());
+
+// Routes
+const userRoutes = require("./routes/user.route.js");
+const scheduleRoutes = require("./routes/schedule.route.js");
+
+// Use Routes
+app.use("/users", userRoutes);
+app.use("/schedules", scheduleRoutes);
