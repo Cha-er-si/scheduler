@@ -1,7 +1,10 @@
-const User = require("../model/User");
+const crypto = require("crypto");
+const nodemailer = require("nodemailer");
 
 const userExists = async (email) => {
+  const User = require("../model/User");
   const user = await User.findOne({ email: email.toLowerCase().trim() });
+  console.log(user);
 
   if (user) {
     return true;
@@ -34,8 +37,28 @@ const generateRandomPassword = () => {
   return password;
 };
 
+const isPasswordHashed = (password) => {
+  const bcryptPattern = /^\$2[aby]\$\d{2}\$.{53}$/;
+  return bcryptPattern.test(password);
+};
+
+const generateOTP = () => {
+  return crypto.randomInt(100000, 999999).toString();
+};
+
+const emailTransporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: "noreply.scheduler1331@gmail.com",
+    pass: "jexgkrxqzswegiwg",
+  },
+});
+
 module.exports = {
   userExists,
   isPasswordNull,
   generateRandomPassword,
+  isPasswordHashed,
+  generateOTP,
+  emailTransporter,
 };

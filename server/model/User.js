@@ -2,6 +2,8 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const bcyrpt = require("bcrypt");
 
+const { isPasswordHashed } = require("../helper/helper");
+
 let User = new Schema(
   {
     firstName: {
@@ -35,10 +37,19 @@ let User = new Schema(
   }
 );
 
+User.methods.toJSON = function () {
+  const userObject = this.toObject();
+  delete userObject.password;
+  return userObject;
+};
+
 User.pre("save", async function (next) {
-  let salt = await bcyrpt.genSalt(11);
-  let passwordHashed = await bcyrpt.hash(this.password, salt);
-  this.password = passwordHashed;
+  if (this.password !== undefined && !isPasswordHashed(this.password)) {
+    let salt = await bcyrpt.genSalt(11);
+    let passwordHashed = await bcyrpt.hash(this.password, salt);
+    this.password = passwordHashed;
+  }
+
   next();
 });
 

@@ -38,7 +38,9 @@ app.use(cookieParser());
 // Routes
 const userRoutes = require("./routes/user.route.js");
 const scheduleRoutes = require("./routes/schedule.route.js");
+const securityRoutes = require("./routes/security.route.js");
 
 // Use Routes
 app.use("/users", userRoutes);
 app.use("/schedules", scheduleRoutes);
+app.use("/security", securityRoutes);

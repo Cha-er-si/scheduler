@@ -8,7 +8,7 @@ signAccessToken = (userID) => {
         user_id: userID,
       },
       process.env.ACCESS_TOKEN,
-      { expiresIn: "15s" },
+      { expiresIn: "5m" },
       (error, token) => {
         if (error) return reject({ error: error.message });
 

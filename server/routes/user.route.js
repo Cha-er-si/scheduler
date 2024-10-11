@@ -69,6 +69,48 @@ router.delete("/:username", verifyAccessToken, async (request, resolve) => {
   }
 });
 
+router.patch("/:username", async (request, resolve) => {
+  try {
+    const { username } = request.params;
+    const parameters = request.body;
+
+    const user = await User.findOne({ username });
+
+    if (!user)
+      return resolve
+        .status(401)
+        .json({ operation: "failed", error: "User does not exist." });
+
+    const fields = [
+      "username",
+      "firstName",
+      "lastName",
+      "email",
+      "password",
+      "role",
+    ];
+
+    fields.forEach((objectKey) => {
+      if (parameters[objectKey] !== undefined)
+        user[objectKey] = parameters[objectKey];
+    });
+
+    const updateUser = await user.save();
+
+    if (!updateUser)
+      return resolve.status(422).json({
+        operation: "failed",
+        error: "Failed to update user information.",
+      });
+
+    return resolve.status(200).json({ operation: "success", user: updateUser });
+  } catch (error) {
+    return resolve
+      .status(500)
+      .json({ operation: "failed", error: error.message });
+  }
+});
+
 router.post("/register", async (request, resolve) => {
   try {
     const { firstName, lastName, email, username, password, role } =
@@ -131,6 +173,28 @@ router.post("/login", async (request, resolve) => {
 
     process.env.JWT_ACCESS_TOKEN = accessToken;
     process.env.JWT_REFRESH_TOKEN = refreshToken;
+
+    return resolve.status(200).json({ operation: "success" });
+  } catch (error) {
+    return resolve
+      .status(500)
+      .json({ operation: "failed", error: error.message });
+  }
+});
+
+router.post("/logout", async (request, resolve) => {
+  try {
+    const { username } = request.body;
+
+    const user = await User.findOne({ username });
+    if (!user) {
+      return resolve
+        .status(401)
+        .json({ operation: "failed", error: "User does not exist." });
+    }
+
+    process.env.JWT_ACCESS_TOKEN = "";
+    process.env.JWT_REFRESH_TOKEN = "";
 
     return resolve.status(200).json({ operation: "success" });
   } catch (error) {
