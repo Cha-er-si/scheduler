@@ -46,10 +46,12 @@ const generateOTP = () => {
   return crypto.randomInt(100000, 999999).toString();
 };
 
+const emailAddress = "noreply.scheduler1331@gmail.com";
+
 const emailTransporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
-    user: "noreply.scheduler1331@gmail.com",
+    user: emailAddress,
     pass: "jexgkrxqzswegiwg",
   },
 });
@@ -61,4 +63,5 @@ module.exports = {
   isPasswordHashed,
   generateOTP,
   emailTransporter,
+  emailAddress,
 };
